@@ -19,13 +19,6 @@
         }
         .hero-bg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 1; }
         .hero-bg > * { position: relative; z-index: 2; }
-        /* Скрываем лишние надписи в Google Форме */
-        iframe {
-            height: 600px;
-        }
-        @media (max-width: 768px) {
-            iframe { height: 650px; }
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -133,14 +126,19 @@
         </div>
     </section>
 
-    <!-- Форма Google (скрыты лишние элементы) -->
+    <!-- Собственная форма (отправка через ваш скрипт) -->
     <section id="contact" class="py-16 bg-amber-800 text-white">
-        <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="max-w-3xl mx-auto px-4 text-center">
             <h2 class="text-3xl font-semibold mb-4">Бесплатная консультация</h2>
             <p class="text-lg mb-6">Оставьте заявку — я свяжусь с вами</p>
-            <div class="bg-white rounded-2xl overflow-hidden" style="border-radius: 16px;">
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScoN-3TkjhUFYDVUmg9IFwrV4AS01CAxv6fREZfRYwProV4dQ/viewform?embedded=true&hl=ru&usp=send_form" width="100%" height="550" frameborder="0" marginheight="0" marginwidth="0" style="overflow:hidden;">Загрузка…</iframe>
-            </div>
+
+            <form id="myForm" class="flex flex-col md:flex-row gap-3 max-w-2xl mx-auto">
+                <input type="text" id="userName" placeholder="Ваше имя" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30 text-base">
+                <input type="tel" id="userPhone" placeholder="Телефон" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30 text-base">
+                <button type="submit" class="bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold text-base hover:bg-amber-700 transition">Отправить</button>
+            </form>
+            <div id="formMessage" class="mt-4 text-amber-200 font-semibold text-base hidden">🎉 Спасибо! Я свяжусь с вами.</div>
+
             <div class="flex flex-wrap justify-center gap-5 mt-8">
                 <a href="tel:89607635170" class="bg-white text-amber-800 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:bg-gray-100 transition"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
                 <a href="mailto:marigoda68@mail.ru" class="bg-white/20 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:bg-white/30 transition"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
@@ -152,6 +150,32 @@
     <footer class="bg-gray-800 text-gray-400 py-5 text-center text-sm">
         <p>© 2026 Людмила Мельверт. Юрист по гражданским делам. Стаж с 2000 года — 26 лет.</p>
     </footer>
+
+    <script>
+        const form = document.getElementById('myForm');
+        const msg = document.getElementById('formMessage');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyYiRY97r6HMUh0hZTY6ZbMU74Q3w1lHvQxo02ei8eCklBqQI8Wbz12e-xD6TP_3As7/exec';
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone })
+                });
+                msg.classList.remove('hidden');
+                form.reset();
+                setTimeout(() => msg.classList.add('hidden'), 5000);
+            } catch (err) {
+                alert('Ошибка отправки. Пожалуйста, позвоните мне напрямую.');
+            }
+        });
+    </script>
 
 </body>
 </html>
