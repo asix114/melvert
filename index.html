@@ -147,19 +147,15 @@
         </div>
     </section>
 
-    <!-- Красивая форма, похожая на сайт -->
+    <!-- Форма (встроенная Google Forms, но стилизована) -->
     <section id="contact" class="py-16 bg-amber-800 text-white">
-        <div class="max-w-3xl mx-auto px-4 text-center">
+        <div class="max-w-4xl mx-auto px-4 text-center">
             <h2 class="text-3xl font-semibold mb-4">Бесплатная консультация</h2>
             <p class="text-lg mb-6 leading-relaxed">Оставьте заявку — я свяжусь с вами</p>
 
-            <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLScoN-3TkjhUFYDVUmg9IFwrV4AS01CAxv6fREZfRYwProV4dQ/formResponse" method="POST" target="hiddenFrame" class="flex flex-col md:flex-row gap-3 max-w-2xl mx-auto">
-                <input type="text" name="entry.2005620554" placeholder="Ваше имя" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30 text-base">
-                <input type="tel" name="entry.1045781291" placeholder="Телефон" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30 text-base">
-                <button type="submit" class="bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold text-base hover:bg-amber-700 transition">Отправить</button>
-            </form>
-            <iframe name="hiddenFrame" style="display:none;"></iframe>
-            <div id="formMessage" class="mt-4 text-amber-200 font-semibold text-base hidden leading-relaxed">🎉 Спасибо! Я свяжусь с вами в ближайшее время.</div>
+            <div style="background: white; border-radius: 16px; overflow: hidden; padding: 0; margin-bottom: 2rem;">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScoN-3TkjhUFYDVUmg9IFwrV4AS01CAxv6fREZfRYwProV4dQ/viewform?embedded=true" width="100%" height="550" frameborder="0" marginheight="0" marginwidth="0" style="display: block;">Загрузка…</iframe>
+            </div>
 
             <div class="flex flex-wrap justify-center gap-5 mt-8 mb-6">
                 <a href="tel:89607635170" class="bg-white text-amber-800 px-6 py-3 rounded-xl font-semibold text-base flex items-center gap-2 hover:bg-gray-100 transition"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
@@ -186,16 +182,6 @@
     </footer>
 
     <script>
-        const form = document.getElementById('googleForm');
-        const msgDiv = document.getElementById('formMessage');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            msgDiv.classList.remove('hidden');
-            form.reset();
-            setTimeout(() => msgDiv.classList.add('hidden'), 5000);
-        });
-
         function showOffer() {
             alert('Договор оферты\n\n1. Консультация бесплатна.\n2. Стоимость услуг фиксируется в договоре.\n3. Оплата по реквизитам после подписания договора.\n4. Сроки и порядок оказания услуг согласовываются индивидуально.\n\nПолный текст договора высылаю по запросу.');
         }
