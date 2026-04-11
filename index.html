@@ -64,22 +64,26 @@
     </div>
 
     <script>
+        // ========== НАСТРОЙКИ ==========
         const DEEPSEEK_API_KEY = 'sk-697641e8049e493c8056f35655a14c19';
         const SHEET_ID = '1m2FXtM_WnRs44oxbn6ge5tLVkZTqERJVuIP-FBlC4Q0';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtOB88j-k3mVIxGUA34MpHiHxB63HfcQZWwRSuW9S0VlCpkZXB26xExruDb0vgtUCz/exec';
         let clients = [];
 
+        // Вход
         function checkLogin() {
             const pass = document.getElementById('adminPass').value;
             if (pass === 'admin123') {
                 document.getElementById('loginPanel').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden-tab');
-                loadClients();
+                loadClientsFromSheet();
                 showSection('clients');
             } else { alert('Неверный пароль'); }
         }
 
-        async function loadClients() {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        // Загрузка клиентов из Google Sheets (второй лист "CRM")
+        async function loadClientsFromSheet() {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0`; // gid=0 — первый лист, если CRM на втором — уточним
             try {
                 const response = await fetch(url);
                 const text = await response.text();
@@ -94,7 +98,8 @@
                             name: row[0]?.v || '',
                             phone: row[1]?.v || '',
                             address: row[2]?.v || '',
-                            question: row[3]?.v || ''
+                            question: row[3]?.v || '',
+                            doc: row[4]?.v || ''
                         });
                     }
                 }
@@ -103,6 +108,7 @@
             } catch (error) {
                 clients = [];
                 renderClients();
+                alert('Ошибка загрузки: ' + error.message);
             }
         }
 
@@ -119,34 +125,57 @@
                             <h3 class="font-bold text-lg">${escapeHtml(client.name)}</h3>
                             <p class="text-gray-600">📞 ${escapeHtml(client.phone)} | 📍 ${escapeHtml(client.address)}</p>
                             <p class="mt-2"><strong>Вопрос:</strong> ${escapeHtml(client.question)}</p>
+                            ${client.doc ? `<p class="mt-2"><strong>📄 Документ:</strong> ${escapeHtml(client.doc)}</p>` : ''}
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-
         function updateClientSelect() {
             const select = document.getElementById('docClient');
             select.innerHTML = '<option value="">-- Выберите клиента --</option>';
-            clients.forEach(client => { select.innerHTML += `<option value="${client.id}">${escapeHtml(client.name)}</option>`; });
+            clients.forEach(client => {
+                select.innerHTML += `<option value="${client.id}">${escapeHtml(client.name)}</option>`;
+            });
         }
 
-        function saveClient() {
+        // Сохранение клиента через Apps Script
+        async function saveClient() {
             const name = document.getElementById('clientName').value;
             const phone = document.getElementById('clientPhone').value;
             const address = document.getElementById('clientAddress').value;
             const question = document.getElementById('clientQuestion').value;
-            if (!name || !phone) { alert('Заполните имя и телефон'); return; }
-            clients.push({ id: Date.now(), name, phone, address, question });
-            renderClients(); updateClientSelect();
-            document.getElementById('clientName').value = ''; document.getElementById('clientPhone').value = '';
-            document.getElementById('clientAddress').value = ''; document.getElementById('clientQuestion').value = '';
-            showSection('clients');
-            alert('✅ Клиент добавлен локально');
+
+            if (!name || !phone) {
+                alert('Заполните имя и телефон');
+                return;
+            }
+
+            const newRow = [[name, phone, address, question, '']];
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'addClient', data: newRow })
+                });
+                
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientPhone').value = '';
+                document.getElementById('clientAddress').value = '';
+                document.getElementById('clientQuestion').value = '';
+                
+                await loadClientsFromSheet();
+                showSection('clients');
+                alert('✅ Клиент добавлен в таблицу');
+            } catch (error) {
+                alert('❌ Ошибка при сохранении: ' + error.message);
+            }
         }
 
+        // Генерация документа
         async function generateDocument() {
             const clientId = document.getElementById('docClient').value;
             const docType = document.getElementById('docType').value;
@@ -154,7 +183,6 @@
             if (!clientId || !docType || !details) { alert('Заполните все поля'); return; }
             const client = clients.find(c => c.id == clientId);
             if (!client) return;
-            if (!DEEPSEEK_API_KEY) { alert('❌ API-ключ отсутствует'); return; }
 
             const prompt = `Составь документ типа "${docType}" для клиента ${client.name}. Детали дела: ${details}. Документ на русском языке, официально-деловым стилем.`;
 
@@ -169,7 +197,7 @@
                 if (!data.choices || !data.choices[0]?.message?.content) throw new Error('Пустой ответ');
                 document.getElementById('docContent').innerText = data.choices[0].message.content;
                 document.getElementById('generatedDoc').classList.remove('hidden');
-            } catch (error) { alert('❌ Ошибка: ' + error.message); }
+            } catch (error) { alert('❌ Ошибка DeepSeek: ' + error.message); }
         }
 
         function showSection(section) {
@@ -178,6 +206,8 @@
             if (section === 'newClient') document.getElementById('newClientSection').classList.remove('hidden-tab');
             if (section === 'generate') document.getElementById('generateSection').classList.remove('hidden-tab');
         }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
     </script>
 </body>
 </html>
