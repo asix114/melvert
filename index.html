@@ -19,7 +19,6 @@
             background: #f5f3ef;
         }
 
-        /* ГЛАВНЫЙ ЭКРАН — ФОТО сжатое юрист за столом.jpg */
         .hero {
             min-height: 100vh;
             background-image: url('сжатое юрист за столом.jpg');
@@ -45,6 +44,16 @@
             color: white;
             text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .logo-top img {
+            height: 40px;
+            width: auto;
         }
 
         .logo-top span {
@@ -56,7 +65,6 @@
             padding: 20px;
         }
 
-        /* НЕ ЖИРНЫЙ, ПРОСТО КРУПНЫЙ OPEN SANS */
         .pain-line {
             font-size: 64px;
             font-weight: 400;
@@ -153,7 +161,56 @@
             color: #5a6e7a;
         }
 
-        /* СЕКЦИЯ С ФОТО фото.jpg И ТЕКСТОМ */
+        /* ПРАЙС */
+        .price-section {
+            background: #f5f3ef;
+            padding: 60px 0;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .price-item {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+
+        .price-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .price-item h4 {
+            font-size: 18px;
+            color: #1e2a3a;
+            font-weight: 600;
+        }
+
+        .price-item p {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c9a03d;
+        }
+
+        .price-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #8a9aa5;
+        }
+
+        /* СЕКЦИЯ С ФОТО И ТЕКСТОМ */
         .about-section {
             display: flex;
             flex-wrap: wrap;
@@ -288,6 +345,8 @@
             .pain-line-small { font-size: 24px; }
             .phone { font-size: 24px; }
             .about-section { flex-direction: column; text-align: center; }
+            .price-item { flex-direction: column; text-align: center; gap: 8px; }
+            .price-item p { font-size: 20px; }
         }
     </style>
 </head>
@@ -295,10 +354,10 @@
 
 <div class="toast" id="toast">✅ Спасибо! Я свяжусь с вами.</div>
 
-<!-- ГЛАВНЫЙ ЭКРАН: сжатое юрист за столом.jpg -->
+<!-- ГЛАВНЫЙ ЭКРАН -->
 <section class="hero">
     <div class="logo-top">
-        <img src="логотип щит юр.jpg" alt="Лого" style="height: 40px; width: auto; display: inline-block; vertical-align: middle; margin-right: 10px;">
+        <img src="логотип щит юр.jpg" alt="Лого">
         ЛЮДМИЛА МЕЛЬВЕРТ <span>| ЮРИСТ</span>
     </div>
     <div class="pain-container">
@@ -323,7 +382,23 @@
     </div>
 </div>
 
-<!-- СЕКЦИЯ: фото.jpg + SEO-ТЕКСТ -->
+<!-- ПРАЙС -->
+<div class="price-section">
+    <div class="container">
+        <div class="section-title"><span>Стоимость услуг</span></div>
+        <div class="price-grid">
+            <div class="price-item"><h4>📞 Устная консультация (15-20 мин)</h4><p>Бесплатно</p></div>
+            <div class="price-item"><h4>📄 Письменная консультация (разбор документов)</h4><p>3 000 ₽</p></div>
+            <div class="price-item"><h4>⚖️ Составление иска / жалобы / заявления</h4><p>от 5 000 ₽</p></div>
+            <div class="price-item"><h4>🏛️ Представительство в суде (1 заседание)</h4><p>от 10 000 ₽</p></div>
+            <div class="price-item"><h4>📁 Ведение дела «под ключ»</h4><p>от 30 000 ₽</p></div>
+            <div class="price-item"><h4>🛡️ Абонентское обслуживание (3 мес)</h4><p>25 000 ₽</p></div>
+        </div>
+        <div class="price-note">* Точная стоимость определяется после ознакомления с документами</div>
+    </div>
+</div>
+
+<!-- СЕКЦИЯ: ФОТО + ТЕКСТ -->
 <div class="container">
     <div class="about-section">
         <div class="about-photo">
