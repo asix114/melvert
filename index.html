@@ -2,189 +2,436 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <link rel="icon" type="image/jpeg" href="логотип щит юр.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Людмила Мельверт | Юрист по гражданским делам</title>
-    <meta name="description" content="Решаю гражданские дела: долги, наследство, раздел имущества, споры. Стаж 26 лет. Бесплатная консультация. Работаю онлайн по всей России. Скидка 10% по промокоду JURIST10">
-    <meta name="keywords" content="юрист, гражданские дела, Людмила Мельверт, наследство, долги, споры, онлайн юрист">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { line-height: 1.6 !important; }
-        h1, h2, h3, h4 { line-height: 1.3 !important; }
-        body { font-family: 'Open Sans', sans-serif; }
-        html { scroll-behavior: smooth; }
-        .hero-bg {
-            background-image: url('сжатое юрист за столом.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.65);
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', 'Segoe UI', serif;
+            line-height: 1.5;
+            color: #1e2a3a;
+            background: #f5f3ef;
+        }
+
+        .shield-bg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.03;
+            pointer-events: none;
+            font-size: 200px;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
             z-index: 1;
         }
-        .hero-bg > * { position: relative; z-index: 2; }
-        .leading-loose { line-height: 1.8 !important; }
-        .leading-relaxed { line-height: 1.7 !important; }
-        p, li, .text-gray-600, .text-gray-700, .text-white, .text-amber-200 { line-height: 1.7 !important; }
-        button, a, input { line-height: normal !important; }
+
+        .header {
+            text-align: center;
+            padding: 40px 0 20px;
+            border-bottom: 2px solid #c9a03d;
+        }
+
+        .logo {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 3px solid #1e2a3a;
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            letter-spacing: 3px;
+            color: #1e2a3a;
+        }
+
+        .logo p {
+            font-size: 14px;
+            color: #c9a03d;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #1e2a3a;
+            margin: 20px 0 10px;
+        }
+
+        .header .tagline {
+            font-size: 20px;
+            color: #5a6e7a;
+            font-style: italic;
+        }
+
+        .experience {
+            background: #c9a03d;
+            color: #1e2a3a;
+            display: inline-block;
+            padding: 8px 25px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding: 60px 0;
+            align-items: center;
+        }
+
+        .hero-content {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .hero-content h2 {
+            font-size: 32px;
+            color: #c9a03d;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #2c3e44;
+        }
+
+        .hero-photo {
+            flex: 1;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        .hero-photo img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            border: 4px solid #c9a03d;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #d9cba3;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5a6e7a;
+            font-size: 14px;
+            border: 4px solid #c9a03d;
+        }
+
+        .services {
+            background: white;
+            padding: 60px 0;
+            border-radius: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 34px;
+            color: #1e2a3a;
+            margin-bottom: 20px;
+        }
+
+        .section-title span {
+            color: #c9a03d;
+            border-bottom: 3px solid #c9a03d;
+            padding-bottom: 5px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: #f5f3ef;
+            border-radius: 20px;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            color: #c9a03d;
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            color: #5a6e7a;
+        }
+
+        .why-me {
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #c9a03d;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #5a6e7a;
+        }
+
+        .form-section {
+            background: #1e2a3a;
+            padding: 60px 0;
+            border-radius: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .form-section h3 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .form-section p {
+            color: #c9a03d;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+        }
+
+        .form-group button {
+            background: #c9a03d;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e2a3a;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .form-group button:hover {
+            background: #b88a2a;
+            transform: scale(1.02);
+        }
+
+        .privacy {
+            font-size: 12px;
+            color: #8a9aa5;
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .phone {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e2a3a;
+            text-decoration: none;
+            display: inline-block;
+            margin: 15px 0;
+        }
+
+        .footer p {
+            color: #8a9aa5;
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2a3a;
+            color: #c9a03d;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 32px; }
+            .hero-content h2 { font-size: 26px; }
+            .phone { font-size: 24px; }
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
+<div class="shield-bg">🛡️</div>
 
-    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-sm shadow-md z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="логотип щит юр.jpg" alt="Логотип" class="w-10 h-10 object-contain">
-                <div>
-                    <h1 class="text-base font-semibold text-gray-800">Людмила Мельверт</h1>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <span>Юрист | Стаж с 2000 года</span>
-                        <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-                        <span class="flex items-center gap-1"><i class="fas fa-globe text-amber-600 text-xs"></i> Онлайн по всей России</span>
-                    </div>
-                </div>
-            </div>
-            <a href="#contact" class="bg-amber-700 text-white px-4 py-1.5 rounded-xl text-sm hover:bg-amber-800 transition">Бесплатно</a>
+<div class="toast" id="toast">✅ Спасибо! Я свяжусь с вами.</div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <h2>ЛЮДМИЛА МЕЛЬВЕРТ</h2>
+            <p>ЮРИСТ</p>
         </div>
-    </header>
+        <h1>27 лет защищаю<br>ваши права</h1>
+        <div class="tagline">Честно. Надёжно. По закону.</div>
+        <div class="experience">⚖️ Гражданские дела | Вся Россия | Дистанционно</div>
+    </div>
 
-    <section class="hero-bg pt-28 pb-20 px-4 min-h-screen flex items-center justify-center text-center">
-        <div class="max-w-4xl mx-auto px-4">
-            <p class="text-white/90 text-3xl md:text-5xl font-normal leading-loose tracking-wide mb-6">
-                Вы устали.<br>
-                Вы боитесь.<br>
-                Вас обманули.
-            </p>
-            <p class="text-amber-200 text-xl md:text-2xl mb-8 leading-loose tracking-wide font-normal">Я здесь, чтобы помочь.</p>
-            <p class="text-white/80 text-base md:text-lg mb-10 leading-relaxed tracking-wide font-normal">Людмила Мельверт — юрист по гражданским делам. Стаж с 2000 года. Бесплатная консультация. Работаю онлайн по всей России.</p>
-            <a href="#contact" class="inline-block bg-amber-600 hover:bg-amber-700 text-white text-base md:text-lg px-8 py-3 rounded-xl font-medium transition shadow-lg">Разберём вашу ситуацию</a>
+    <div class="hero">
+        <div class="hero-content">
+            <h2>Людмила Мельверт</h2>
+            <p>Юрист по гражданским делам с 27-летним стажем. Работаю дистанционно по всей России.</p>
+            <p><strong>Наследство | Долги | Споры</strong> — решаю сложные вопросы, где другие опускают руки.</p>
+            <p>✅ Консультация — первый шаг к решению вашей проблемы.<br>
+            ✅ Дистанционно — экономлю ваше время и деньги.<br>
+            ✅ 27 лет практики — знаю, как выиграть ваше дело.</p>
         </div>
-    </section>
-
-    <section class="py-16 bg-white">
-        <div class="max-w-5xl mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">С какими ситуациями я работаю</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="flex gap-4 p-5 bg-gray-50 rounded-xl shadow-sm"><div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><i class="fas fa-gavel text-amber-700 text-xl"></i></div><div><h3 class="font-semibold text-gray-800 text-lg mb-1">Приставы на пороге?</h3><p class="text-gray-600 leading-relaxed">Остановим взыскание, договоримся с кредиторами, реструктуризируем долг.</p></div></div>
-                <div class="flex gap-4 p-5 bg-gray-50 rounded-xl shadow-sm"><div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><i class="fas fa-hand-holding-usd text-amber-700 text-xl"></i></div><div><h3 class="font-semibold text-gray-800 text-lg mb-1">Должник скрывается?</h3><p class="text-gray-600 leading-relaxed">Найдём имущество, подадим в суд, добьёмся взыскания через приставов.</p></div></div>
-                <div class="flex gap-4 p-5 bg-gray-50 rounded-xl shadow-sm"><div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><i class="fas fa-tree text-amber-700 text-xl"></i></div><div><h3 class="font-semibold text-gray-800 text-lg mb-1">Наследство делят нечестно?</h3><p class="text-gray-600 leading-relaxed">Защитим вашу долю, оспорим незаконное завещание, восстановим сроки.</p></div></div>
-                <div class="flex gap-4 p-5 bg-gray-50 rounded-xl shadow-sm"><div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><i class="fas fa-heart-broken text-amber-700 text-xl"></i></div><div><h3 class="font-semibold text-gray-800 text-lg mb-1">Развод и раздел имущества?</h3><p class="text-gray-600 leading-relaxed">Квартира, машина, бизнес — добьёмся справедливого раздела.</p></div></div>
-            </div>
+        <div class="hero-photo">
+            <img src="photo.jpg" alt="Людмила Мельверт" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="photo-placeholder" style="display: none;">📸 Ваше фото</div>
         </div>
-    </section>
+    </div>
 
-    <section class="py-16 bg-amber-50">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <img src="foto.jpg" alt="Людмила Мельверт" class="w-48 h-48 rounded-full object-cover shadow-xl border-4 border-white">
-                <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-3xl font-semibold text-gray-800 mb-4">Обо мне</h2>
-                    <p class="text-gray-700 mb-3 text-lg leading-relaxed">Меня зовут <strong>Людмила Мельверт</strong>. Я юрист по гражданским делам.</p>
-                    <p class="text-gray-700 mb-3 leading-relaxed">Начала практиковать в <strong>2000 году</strong> — за плечами 26 лет и сотни выигранных дел.</p>
-                    <p class="text-gray-700 leading-relaxed">Работаю <strong>дистанционно по всей России и за рубежом</strong>. Первая консультация — <strong class="text-amber-700">бесплатно</strong>.</p>
-                </div>
+    <div class="services">
+        <div class="container">
+            <div class="section-title"><span>Помогаю в делах</span></div>
+            <div class="services-grid">
+                <div class="service-card"><div class="service-icon">🏛️</div><h3>Наследство</h3><p>Вступление, раздел, оспаривание завещаний. Полное сопровождение.</p></div>
+                <div class="service-card"><div class="service-icon">💰</div><h3>Долги</h3><p>Взыскание с должников. Списание по закону. Защита от коллекторов.</p></div>
+                <div class="service-card"><div class="service-icon">⚖️</div><h3>Гражданские споры</h3><p>Жилищные, земельные, договорные. Представительство в суде.</p></div>
+                <div class="service-card"><div class="service-icon">📄</div><h3>Консультации</h3><p>Разбор ситуации онлайн. Стратегия. Документы. Цена вопроса.</p></div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="py-16 bg-white">
-        <div class="max-w-5xl mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">Как я работаю</h2>
-            <div class="grid md:grid-cols-4 gap-6 text-center">
-                <div><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-amber-700 font-semibold text-2xl">1</span></div><h3 class="font-semibold text-xl mb-2">Консультация</h3><p class="text-gray-600 leading-relaxed">Бесплатно, анализирую ситуацию</p></div>
-                <div><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-amber-700 font-semibold text-2xl">2</span></div><h3 class="font-semibold text-xl mb-2">Договор</h3><p class="text-gray-600 leading-relaxed">Фиксируем стоимость и сроки</p></div>
-                <div><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-amber-700 font-semibold text-2xl">3</span></div><h3 class="font-semibold text-xl mb-2">Оплата</h3><p class="text-gray-600 leading-relaxed">По договору, без скрытых платежей</p></div>
-                <div><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-amber-700 font-semibold text-2xl">4</span></div><h3 class="font-semibold text-xl mb-2">Результат</h3><p class="text-gray-600 leading-relaxed">Веду дело до полного решения</p></div>
-            </div>
+    <div class="why-me">
+        <div class="section-title"><span>Почему выбирают меня</span></div>
+        <div class="stats">
+            <div class="stat"><div class="stat-number">27</div><div class="stat-label">лет стажа</div></div>
+            <div class="stat"><div class="stat-number">500+</div><div class="stat-label">выигранных дел</div></div>
+            <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">на связи</div></div>
+            <div class="stat"><div class="stat-number">🌍</div><div class="stat-label">Вся Россия</div></div>
         </div>
-    </section>
+    </div>
 
-    <section id="price" class="py-16 bg-gray-50">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Прайс-лист</h2>
-            <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
-                <div class="grid md:grid-cols-2">
-                    <div class="p-6 border-b md:border-b-0 md:border-r">
-                        <h3 class="font-semibold text-amber-700 text-xl mb-4">📋 Консультации и документы</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between text-base leading-relaxed"><span>Устная консультация (до 20 мин)</span><span class="text-green-600 font-semibold">Бесплатно</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Анализ документов</span><span>3 000 – 5 000 ₽</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Составление иска / жалобы</span><span>3 000 – 5 000 ₽</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Проект договора</span><span>3 000 – 5 000 ₽</span></div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-amber-700 text-xl mb-4">⚖️ Суд и споры</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between leading-relaxed"><span>Ведение дела «под ключ»</span><span>от 25 000 ₽</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Представительство в суде онлайн</span><span>от 15 000 ₽</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Наследственные споры</span><span>от 25 000 ₽</span></div>
-                            <div class="flex justify-between leading-relaxed"><span>Раздел имущества</span><span>от 30 000 ₽</span></div>
-                        </div>
-                    </div>
-                </div>
+    <div class="form-section">
+        <h3>Остались вопросы?</h3>
+        <p>Оставьте телефон — я перезвоню и бесплатно проконсультирую</p>
+        <form id="leadForm">
+            <div class="form-group">
+                <input type="text" id="userName" placeholder="Ваше имя" required>
+                <input type="tel" id="userPhone" placeholder="+7 (___)" required>
+                <button type="submit">📞 Записаться</button>
             </div>
-            <p class="text-center text-gray-400 text-sm mt-4 leading-relaxed">*Точная стоимость после консультации</p>
-        </div>
-    </section>
+            <div class="privacy">Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности</div>
+        </form>
+    </div>
 
-    <section class="py-16 bg-white">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Отзывы</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-gray-50 p-6 rounded-xl italic text-gray-700 leading-relaxed"><i class="fas fa-quote-left text-amber-300 text-2xl mr-2"></i> Людмила помогла разобраться с наследственным делом, которое тянулось полгода. Всё объяснила, подготовила документы. Результат — положительное решение суда.<div class="font-semibold text-gray-800 mt-3 text-right">— Екатерина</div></div>
-                <div class="bg-gray-50 p-6 rounded-xl italic text-gray-700 leading-relaxed"><i class="fas fa-quote-left text-amber-300 text-2xl mr-2"></i> Консультировался по разделу имущества. Всё чётко, по делу, без воды. Рекомендую.<div class="font-semibold text-gray-800 mt-3 text-right">— Сергей</div></div>
-            </div>
-        </div>
-    </section>
+    <div class="footer">
+        <a href="tel:+79607635170" class="phone">📞 8-960-763-51-70</a>
+        <p>Людмила Мельверт — юрист по гражданским делам. Работаю дистанционно по всей России.</p>
+        <p>© 2026 Все права защищены</p>
+    </div>
+</div>
 
-    <section id="contact" class="py-16 bg-amber-800 text-white">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-semibold mb-4">Бесплатная консультация</h2>
-            <p class="text-lg mb-6 leading-relaxed">Оставьте заявку — я свяжусь с вами</p>
-            <form id="myForm" class="flex flex-col md:flex-row gap-3 max-w-2xl mx-auto">
-                <input type="text" id="userName" placeholder="Ваше имя" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30">
-                <input type="tel" id="userPhone" placeholder="Телефон" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl border border-white/30">
-                <button type="submit" class="bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold">Отправить</button>
-            </form>
-            <div id="formMessage" class="mt-4 text-amber-200 font-semibold hidden">🎉 Спасибо! Я свяжусь с вами.</div>
-            <div class="flex flex-wrap justify-center gap-5 mt-8">
-                <a href="tel:89607635170" class="bg-white text-amber-800 px-6 py-3 rounded-xl font-semibold flex items-center gap-2"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
-                <a href="mailto:marigoda68@mail.ru" class="bg-white/20 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
-            </div>
-            <p class="text-sm text-white/80 mt-8">📍 Работаю по всей России онлайн</p>
-        </div>
-    </section>
+<script>
+    // ==== НАСТРОЙКИ ====
+    // ВСТАВЬТЕ СЮДА ВАШ URL ИЗ GOOGLE APPS SCRIPT
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz4JXOSZqO6eF-7qU6JzK8YH9xL3qL0zX1cV2bN3mM/exec';
+    
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
 
-    <footer class="bg-gray-800 text-gray-400 py-5 text-center text-sm">
-        <p>© 2026 Людмила Мельверт. Юрист по гражданским делам. Стаж с 2000 года — 26 лет.</p>
-    </footer>
-
-    <script>
-        const form = document.getElementById('myForm');
-        const msg = document.getElementById('formMessage');
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx6Zb5VF3IFcQR7nKj159BitfzBwXPemhdmbj6Cc74S_T3gfOWghOetdYpEMzLrrJSL/exec';
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            try {
-                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, phone }) });
-                msg.classList.remove('hidden');
-                form.reset();
-                setTimeout(() => msg.classList.add('hidden'), 5000);
-            } catch (err) { alert('Ошибка отправки. Пожалуйста, позвоните.'); }
-        });
-    </script>
-
+    document.getElementById('leadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('userName').value;
+        const phone = document.getElementById('userPhone').value;
+        
+        if (!name || !phone) {
+            showToast('❌ Заполните имя и телефон');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}?action=addLead&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&source=юрист`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                showToast('✅ Спасибо! Я свяжусь с вами.');
+                document.getElementById('leadForm').reset();
+            } else {
+                showToast('❌ Ошибка. Позвоните по телефону.');
+            }
+        } catch(e) {
+            showToast('❌ Ошибка. Позвоните по телефону.');
+        }
+    });
+</script>
 </body>
 </html>
