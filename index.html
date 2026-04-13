@@ -18,7 +18,6 @@
             background: #f5f3ef;
         }
 
-        /* ГЛАВНЫЙ ЭКРАН */
         .hero {
             min-height: 100vh;
             background-image: url('сжатое юрист за столом.jpg');
@@ -33,7 +32,6 @@
             text-align: center;
         }
 
-        /* ЛОГОТИП СВЕРХУ */
         .logo-top {
             position: absolute;
             top: 30px;
@@ -51,7 +49,6 @@
             color: #c9a03d;
         }
 
-        /* БОЛИ — БОЛЬШИМ ТЕКСТОМ, БЕЗ ПОДЛОЖКИ, БЕЗ СМАЙЛИКОВ */
         .pain-container {
             max-width: 800px;
             padding: 20px;
@@ -94,7 +91,6 @@
             transform: scale(1.02);
         }
 
-        /* ОСТАЛЬНЫЕ СЕКЦИИ (СВЕТЛЫЕ) */
         .white-section {
             background: white;
             padding: 60px 0;
@@ -154,41 +150,43 @@
             color: #5a6e7a;
         }
 
-        .stats {
+        /* СЕКЦИЯ С ФОТО И ТЕКСТОМ */
+        .about-section {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             gap: 40px;
-            margin: 40px 0;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 48px;
-            font-weight: bold;
-            color: #c9a03d;
-        }
-
-        .stat-label {
-            font-size: 16px;
-            color: #5a6e7a;
-        }
-
-        .seo-text {
+            align-items: center;
+            padding: 60px 0;
             background: #f5f3ef;
-            padding: 40px 0;
-            text-align: center;
         }
 
-        .seo-text p {
-            max-width: 800px;
-            margin: 0 auto;
+        .about-photo {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .about-photo img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .about-text h3 {
+            font-size: 28px;
+            color: #1e2a3a;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
             font-size: 16px;
             color: #5a6e7a;
             line-height: 1.6;
+            margin-bottom: 15px;
         }
 
         .form-section {
@@ -244,16 +242,10 @@
             background: #b88a2a;
         }
 
-        .footer-photo {
-            text-align: center;
-            margin: 40px 0;
-        }
-
-        .footer-photo img {
-            max-width: 100%;
-            border-radius: 20px;
-            max-height: 400px;
-            object-fit: cover;
+        .privacy {
+            font-size: 12px;
+            color: #8a9aa5;
+            margin-top: 20px;
         }
 
         .footer {
@@ -292,6 +284,7 @@
             .pain-line { font-size: 36px; }
             .pain-line-small { font-size: 24px; }
             .phone { font-size: 24px; }
+            .about-section { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -299,7 +292,7 @@
 
 <div class="toast" id="toast">✅ Спасибо! Я свяжусь с вами.</div>
 
-<!-- ГЛАВНЫЙ ЭКРАН: ФОТО ФОНОМ -->
+<!-- ГЛАВНЫЙ ЭКРАН -->
 <section class="hero">
     <div class="logo-top">
         ЛЮДМИЛА МЕЛЬВЕРТ <span>| ЮРИСТ</span>
@@ -313,9 +306,9 @@
     </div>
 </section>
 
-<!-- ОСТАЛЬНОЙ КОНТЕНТ -->
-<div class="container">
-    <div class="white-section">
+<!-- УСЛУГИ -->
+<div class="white-section">
+    <div class="container">
         <div class="section-title"><span>Помогаю в делах</span></div>
         <div class="services-grid">
             <div class="service-card"><div class="service-icon">🏛️</div><h3>Наследство</h3><p>Вступление, раздел, оспаривание завещаний. Полное сопровождение.</p></div>
@@ -324,11 +317,25 @@
             <div class="service-card"><div class="service-icon">📄</div><h3>Консультации</h3><p>Разбор ситуации онлайн. Стратегия. Документы. Цена вопроса.</p></div>
         </div>
     </div>
+</div>
 
-    <div class="seo-text">
-        <p>Более 27 лет я защищаю права граждан по всей России. Специализируюсь на гражданских делах: наследство, долги, жилищные и земельные споры. Работаю дистанционно — вам не нужно приезжать в офис. Проведу анализ вашей ситуации, разработаю стратегию защиты и представлю ваши интересы на любой стадии процесса. Сотни выигранных дел и довольных клиентов — лучшая рекомендация.</p>
+<!-- СЕКЦИЯ: ФОТО + СЕО-ТЕКСТ (рядом) -->
+<div class="container">
+    <div class="about-section">
+        <div class="about-photo">
+            <img src="фото.jpg" alt="Людмила Мельверт в офисе">
+        </div>
+        <div class="about-text">
+            <h3>Людмила Мельверт — ваш юрист</h3>
+            <p>Более 27 лет я защищаю права граждан по всей России. Специализируюсь на гражданских делах: наследство, долги, жилищные и земельные споры.</p>
+            <p>Работаю дистанционно — вам не нужно приезжать в офис. Проведу анализ вашей ситуации, разработаю стратегию защиты и представлю ваши интересы на любой стадии процесса.</p>
+            <p>Сотни выигранных дел и довольных клиентов — лучшая рекомендация.</p>
+        </div>
     </div>
+</div>
 
+<!-- ФОРМА -->
+<div class="container">
     <div class="form-section" id="form">
         <h3>Остались вопросы?</h3>
         <p>Оставьте телефон — я перезвоню и бесплатно проконсультирую</p>
@@ -341,12 +348,10 @@
             <div class="privacy">Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности</div>
         </form>
     </div>
+</div>
 
-    <!-- ВТОРОЕ ФОТО ВНИЗУ -->
-    <div class="footer-photo">
-        <img src="фото.jpg" alt="Людмила Мельверт в офисе">
-    </div>
-
+<!-- ПОДВАЛ -->
+<div class="container">
     <div class="footer">
         <a href="tel:+79607635170" class="phone">📞 8-960-763-51-70</a>
         <p>Людмила Мельверт — юрист по гражданским делам. Работаю дистанционно по всей России.</p>
