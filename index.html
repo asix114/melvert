@@ -123,19 +123,6 @@
             border: 4px solid #c9a03d;
         }
 
-        .photo-placeholder {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #d9cba3;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #5a6e7a;
-            font-size: 14px;
-            border: 4px solid #c9a03d;
-        }
-
         .services {
             background: white;
             padding: 60px 0;
@@ -349,8 +336,7 @@
             ✅ 27 лет практики — знаю, как выиграть ваше дело.</p>
         </div>
         <div class="hero-photo">
-            <img src="photo.jpg" alt="Людмила Мельверт" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="photo-placeholder" style="display: none;">📸 Ваше фото</div>
+            <img src="фото.jpg" alt="Людмила Мельверт" onerror="this.style.display='none'">
         </div>
     </div>
 
@@ -397,9 +383,7 @@
 </div>
 
 <script>
-    // ==== НАСТРОЙКИ ====
-    // ВСТАВЬТЕ СЮДА ВАШ URL ИЗ GOOGLE APPS SCRIPT
-    const API_URL = 'https://script.google.com/macros/s/AKfycbz4JXOSZqO6eF-7qU6JzK8YH9xL3qL0zX1cV2bN3mM/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzdsiTUaAvYJZrYMINOXKu3e_lLkN8oB_u5WDAJ2_SGo_u5MhFdwHCUd8eby6ZdXSWQ/exec';
     
     function showToast(msg) {
         const toast = document.getElementById('toast');
@@ -419,15 +403,14 @@
         }
         
         try {
-            const response = await fetch(`${API_URL}?action=addLead&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&source=юрист`);
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-                showToast('✅ Спасибо! Я свяжусь с вами.');
-                document.getElementById('leadForm').reset();
-            } else {
-                showToast('❌ Ошибка. Позвоните по телефону.');
-            }
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, phone: phone })
+            });
+            showToast('✅ Спасибо! Я свяжусь с вами.');
+            document.getElementById('leadForm').reset();
         } catch(e) {
             showToast('❌ Ошибка. Позвоните по телефону.');
         }
