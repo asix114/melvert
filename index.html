@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Людмила Мельверт | Юрист по гражданским делам</title>
+    <title>Людмила Мельверт | Юрист по гражданским делам | 27 лет стажа</title>
+    <meta name="description" content="Юрист по гражданским делам с 27-летним стажем. Дистанционная защита по всей России. Наследство, долги, споры. Бесплатная консультация.">
+    <meta name="keywords" content="юрист, гражданские дела, наследство, долги, споры, дистанционно, Россия">
     <style>
         * {
             margin: 0;
@@ -123,6 +125,48 @@
             border: 4px solid #c9a03d;
         }
 
+        .emotions {
+            background: #1e2a3a;
+            padding: 60px 0;
+            border-radius: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .emotions h2 {
+            color: #c9a03d;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .emotion-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px 20px;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .emotion-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .emotion-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .emotion-card p {
+            font-size: 16px;
+            color: #c9a03d;
+        }
+
         .services {
             background: white;
             padding: 60px 0;
@@ -204,6 +248,20 @@
         .stat-label {
             font-size: 16px;
             color: #5a6e7a;
+        }
+
+        .seo-text {
+            background: #f5f3ef;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .seo-text p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 16px;
+            color: #5a6e7a;
+            line-height: 1.6;
         }
 
         .form-section {
@@ -331,12 +389,33 @@
             <h2>Людмила Мельверт</h2>
             <p>Юрист по гражданским делам с 27-летним стажем. Работаю дистанционно по всей России.</p>
             <p><strong>Наследство | Долги | Споры</strong> — решаю сложные вопросы, где другие опускают руки.</p>
-            <p>✅ Консультация — первый шаг к решению вашей проблемы.<br>
-            ✅ Дистанционно — экономлю ваше время и деньги.<br>
-            ✅ 27 лет практики — знаю, как выиграть ваше дело.</p>
+            <p>✅ Бесплатная консультация — первый шаг к решению вашей проблемы.<br>
+            ✅ Дистанционная защита на любой стадии.<br>
+            ✅ Анализ ситуации и избрание способа защиты права.</p>
         </div>
         <div class="hero-photo">
-            <img src="фото.jpg" alt="Людмила Мельверт" onerror="this.style.display='none'">
+            <img src="сжатое юрист за столом.jpg" alt="Людмила Мельверт" onerror="this.src='фото.jpg'">
+        </div>
+    </div>
+
+    <div class="emotions">
+        <h2>Вы узнаёте себя?</h2>
+        <div class="emotions-grid">
+            <div class="emotion-card">
+                <div class="emotion-icon">😔</div>
+                <h3>Вы устали?</h3>
+                <p>Бесконечные суды, бумаги, ожидание. Я возьму всё на себя.</p>
+            </div>
+            <div class="emotion-card">
+                <div class="emotion-icon">😨</div>
+                <h3>Вы боитесь?</h3>
+                <p>Ошибиться, пропустить сроки, потерять деньги. Я проведу вас за руку.</p>
+            </div>
+            <div class="emotion-card">
+                <div class="emotion-icon">😞</div>
+                <h3>Вас обманули?</h3>
+                <p>Недобросовестный партнёр, мошенники, обманутые ожидания. Верну справедливость.</p>
+            </div>
         </div>
     </div>
 
@@ -359,6 +438,12 @@
             <div class="stat"><div class="stat-number">500+</div><div class="stat-label">выигранных дел</div></div>
             <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">на связи</div></div>
             <div class="stat"><div class="stat-number">🌍</div><div class="stat-label">Вся Россия</div></div>
+        </div>
+    </div>
+
+    <div class="seo-text">
+        <div class="container">
+            <p>Более 25 лет я защищаю права граждан по всей России. Специализируюсь на гражданских делах: наследство, долги, жилищные и земельные споры. Работаю дистанционно — вам не нужно приезжать в офис. Проведу анализ вашей ситуации, разработаю стратегию защиты и представлю ваши интересы на любой стадии процесса. Сотни выигранных дел и довольных клиентов — лучшая рекомендация.</p>
         </div>
     </div>
 
@@ -403,7 +488,7 @@
         }
         
         try {
-            const response = await fetch(API_URL, {
+            await fetch(API_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
