@@ -16,6 +16,10 @@
         .toast.show { opacity: 1; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
         .modal.active { display: flex; }
+        .client-card { cursor: pointer; transition: all 0.2s; }
+        .client-card:hover { background: #fef3c7; transform: translateX(5px); }
+        .back-btn { cursor: pointer; color: #b45309; font-size: 14px; margin-bottom: 15px; display: inline-block; }
+        .back-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -41,11 +45,20 @@
         <button onclick="switchTab('settings')" id="tab_settings" class="tab-button tab-inactive">⚙️ НАСТРОЙКИ</button>
     </div>
 
-    <!-- КЛИЕНТЫ -->
+    <!-- КЛИЕНТЫ (список) -->
     <div id="clientsTab" class="tab-content">
         <div class="bg-white rounded-xl shadow-sm p-4">
             <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">👥 КЛИЕНТЫ</h2><button onclick="openClientModal()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm">➕ Добавить клиента</button></div>
             <div id="clientsList" class="space-y-2 max-h-96 overflow-y-auto">Загрузка...</div>
+        </div>
+    </div>
+
+    <!-- КАРТОЧКА КЛИЕНТА (вместо списка) -->
+    <div id="clientCardTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <button onclick="backToClientsList()" class="back-btn">← Назад к списку клиентов</button>
+            <div id="clientCardContent"></div>
+            <div class="mt-6"><button onclick="openNewRequestModal()" class="bg-amber-600 text-white px-4 py-2 rounded-lg">➕ Новое обращение</button></div>
         </div>
     </div>
 
@@ -110,24 +123,71 @@
     </div>
 </div>
 
+<!-- МОДАЛКА НОВОГО ОБРАЩЕНИЯ -->
+<div id="requestModal" class="modal">
+    <div class="bg-white rounded-xl w-full max-w-md m-4 p-6">
+        <div class="flex justify-between"><h3 class="text-xl font-bold mb-4">➕ Новое обращение</h3><button onclick="closeRequestModal()" class="text-gray-500 text-2xl">&times;</button></div>
+        <div class="space-y-3">
+            <textarea id="requestText" rows="4" placeholder="Опишите обращение клиента..." class="w-full border rounded-lg p-2"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            <button onclick="closeRequestModal()" class="px-4 py-2 border rounded-lg">Отмена</button>
+            <button onclick="saveNewRequest()" class="px-4 py-2 bg-amber-600 text-white rounded-lg">Сохранить</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby6BGWA-Np7b-1s4SzthfXYYMAsL590YsWe7V2bvghuMckCeAIzgBHPYHJXOTPFhlHW/exec';
     let clients = [];
+    let currentClientId = null;
 
     function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
     async function loadClients() {
         try { const r = await fetch(`${API_URL}?action=getClients`); const d = await r.json(); if (d.status === 'success') { clients = d.clients || []; renderClients(); updateClientSelects(); } } catch(e) { console.error(e); }
     }
-    function renderClients() { const container = document.getElementById('clientsList'); if (!clients.length) { container.innerHTML = '<div class="text-center py-10 text-gray-500">👥 Нет клиентов. Добавьте первого.</div>'; return; } container.innerHTML = clients.map(c => `<div class="bg-gray-50 p-3 rounded-lg"><div class="flex justify-between"><span class="font-bold">${c.name}</span><button onclick="deleteClient(${c.id})" class="text-red-500 text-sm">🗑️</button></div><div>📞 ${c.phone || '—'}</div><div>📌 ${c.notes || '—'}</div></div>`).join(''); }
+    function renderClients() { const container = document.getElementById('clientsList'); if (!clients.length) { container.innerHTML = '<div class="text-center py-10 text-gray-500">👥 Нет клиентов. Добавьте первого.</div>'; return; } container.innerHTML = clients.map(c => `<div class="client-card bg-gray-50 p-3 rounded-lg" onclick="openClientCard(${c.id})"><div class="flex justify-between"><span class="font-bold">${c.name}</span><span class="text-xs text-gray-400">${c.date ? new Date(c.date).toLocaleDateString() : ''}</span></div><div>📞 ${c.phone || '—'}</div><div>📌 ${c.notes || '—'}</div></div>`).join(''); }
     function updateClientSelects() { const selects = ['consultClientId', 'docClientId']; selects.forEach(id => { const s = document.getElementById(id); if (s) { s.innerHTML = '<option value="">-- Выберите клиента --</option>' + clients.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); } }); }
+    
+    async function openClientCard(id) {
+        currentClientId = id;
+        const client = clients.find(c => c.id == id);
+        document.getElementById('clientsTab').style.display = 'none';
+        document.getElementById('clientCardTab').style.display = 'block';
+        // Загружаем историю обращений (пока заглушка, из таблицы consultations)
+        document.getElementById('clientCardContent').innerHTML = `
+            <div class="border-b pb-4 mb-4"><h2 class="text-2xl font-bold">${client.name}</h2>
+            <p>📞 ${client.phone || '—'}</p><p>📍 ${client.address || '—'}</p><p>🆔 ${client.passport || '—'}</p></div>
+            <h3 class="font-bold text-lg mb-3">📋 История обращений</h3>
+            <div class="space-y-2 text-sm text-gray-600" id="clientHistory">
+                <p class="text-gray-400">Загрузка истории...</p>
+            </div>
+        `;
+        // Загружаем историю из таблицы consultations (нужно добавить в скрипт)
+        try {
+            const r = await fetch(`${API_URL}?action=getClientHistory&clientId=${id}`);
+            const d = await r.json();
+            if (d.status === 'success' && d.history && d.history.length) {
+                const historyHtml = d.history.map(h => `<div class="bg-gray-50 p-2 rounded">📅 ${h.date} — ${h.text}</div>`).join('');
+                document.getElementById('clientHistory').innerHTML = historyHtml;
+            } else {
+                document.getElementById('clientHistory').innerHTML = '<p class="text-gray-400">Нет обращений</p>';
+            }
+        } catch(e) { document.getElementById('clientHistory').innerHTML = '<p class="text-gray-400">Нет обращений</p>'; }
+    }
+    function backToClientsList() { document.getElementById('clientCardTab').style.display = 'none'; document.getElementById('clientsTab').style.display = 'block'; currentClientId = null; }
+    
     function openClientModal() { document.getElementById('clientModal').classList.add('active'); }
     function closeClientModal() { document.getElementById('clientModal').classList.remove('active'); }
     async function saveClient() { const name = document.getElementById('clientName').value; if (!name) { showToast('Введите ФИО'); return; } const phone = document.getElementById('clientPhone').value; const address = document.getElementById('clientAddress').value; const passport = document.getElementById('clientPassport').value; const notes = document.getElementById('clientNotes').value; try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'addClient', name, phone, address, passport, notes }) }); showToast('Клиент добавлен'); closeClientModal(); loadClients(); } catch(e) { showToast('Ошибка'); } }
-    function deleteClient(id) { showToast('Удаление через скрипт'); }
+    
+    function openNewRequestModal() { document.getElementById('requestModal').classList.add('active'); }
+    function closeRequestModal() { document.getElementById('requestModal').classList.remove('active'); }
+    async function saveNewRequest() { const text = document.getElementById('requestText').value; if (!text) { showToast('Введите текст обращения'); return; } if (!currentClientId) { showToast('Ошибка: клиент не выбран'); return; } try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'addRequest', clientId: currentClientId, text: text }) }); showToast('Обращение сохранено'); closeRequestModal(); openClientCard(currentClientId); } catch(e) { showToast('Ошибка'); } }
 
     async function loadLeads() { try { const r = await fetch(`${API_URL}?action=getLeads`); const d = await r.json(); if (d.status === 'success') { renderLeads(d.leads || []); } } catch(e) { showToast('Ошибка загрузки'); } }
-    function renderLeads(leads) { const container = document.getElementById('leadsList'); if (!leads.length) { container.innerHTML = '<div class="text-center py-10 text-gray-500">📋 Нет заявок</div>'; return; } container.innerHTML = leads.map(l => `<div class="bg-gray-50 p-3 rounded-lg"><div><span class="font-bold">${l.name}</span> <span class="text-sm text-gray-500">${l.date || ''}</span></div><div>📞 ${l.phone || ''}</div><div>📌 Статус: ${l.status || 'новая'}</div><div class="text-sm text-gray-600">📝 ${l.notes || '—'}</div></div>`).join(''); }
+    function renderLeads(leads) { const container = document.getElementById('leadsList'); if (!leads.length) { container.innerHTML = '<div class="text-center py-10 text-gray-500">📋 Нет заявок</div>'; return; } container.innerHTML = leads.map(l => `<div class="bg-gray-50 p-3 rounded-lg"><div><span class="font-bold">${l.name}</span> <span class="text-sm text-gray-500">${l.date || ''}</span></div><div>📞 ${l.phone || ''}</div><div>📌 Статус: ${l.status || 'новая'}</div></div>`).join(''); }
 
     function saveDeepSeekKey() { const key = document.getElementById('deepseekKey').value; localStorage.setItem('deepseek_key', key); document.getElementById('keyStatus').innerHTML = '<span class="text-green-600">✅ Ключ сохранён</span>'; showToast('Ключ сохранён'); }
     function getDeepSeekKey() { const key = localStorage.getItem('deepseek_key'); if (!key) { showToast('⚠️ Сначала введите API ключ DeepSeek в настройках'); return null; } return key; }
@@ -139,7 +199,8 @@
     function copyDocResult() { const text = document.getElementById('docResult').value; if (text) { navigator.clipboard.writeText(text); showToast('Скопировано'); } }
 
     function switchTab(tab) { document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none'); document.getElementById(tab + 'Tab').style.display = 'block'; document.querySelectorAll('.tab-button').forEach(btn => { btn.classList.remove('tab-active'); btn.classList.add('tab-inactive'); }); document.getElementById('tab_' + tab).classList.add('tab-active'); if (tab === 'clients') loadClients(); if (tab === 'leads') loadLeads(); if (tab === 'settings') { const savedKey = localStorage.getItem('deepseek_key'); if (savedKey) document.getElementById('deepseekKey').value = savedKey; } }
-    window.switchTab = switchTab; window.openClientModal = openClientModal; window.closeClientModal = closeClientModal; window.saveClient = saveClient; window.loadLeads = loadLeads; window.askDeepSeek = askDeepSeek; window.saveConsultation = saveConsultation; window.generateDocument = generateDocument; window.copyDocResult = copyDocResult; window.saveDeepSeekKey = saveDeepSeekKey;
+    
+    window.switchTab = switchTab; window.openClientModal = openClientModal; window.closeClientModal = closeClientModal; window.saveClient = saveClient; window.loadLeads = loadLeads; window.askDeepSeek = askDeepSeek; window.saveConsultation = saveConsultation; window.generateDocument = generateDocument; window.copyDocResult = copyDocResult; window.saveDeepSeekKey = saveDeepSeekKey; window.openClientCard = openClientCard; window.backToClientsList = backToClientsList; window.openNewRequestModal = openNewRequestModal; window.closeRequestModal = closeRequestModal; window.saveNewRequest = saveNewRequest;
     loadClients();
 </script>
 </body>
