@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CRM | Людмила Мельверт</title>
+    <link rel="icon" type="image/jpeg" href="логотип щит юр.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Open Sans',sans-serif;background:#f3f4f6}
+        .tab-button{padding:10px 20px;font-weight:600;border-radius:12px 12px 0 0;cursor:pointer}
+        .tab-active{background:white;color:#b45309;border-bottom:3px solid #b45309}
+        .tab-inactive{background:#e5e7eb;color:#6b7280}
+        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2937;color:white;padding:8px 16px;border-radius:9999px;font-size:14px;z-index:1000;opacity:0;transition:opacity 0.3s;pointer-events:none}
+        .toast.show{opacity:1}
+        .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:1000}
+        .modal.active{display:flex}
+        .client-card{cursor:pointer;transition:all 0.2s}
+        .client-card:hover{background:#fef3c7;transform:translateX(5px)}
+        .back-btn{cursor:pointer;color:#b45309;font-size:14px;margin-bottom:15px;display:inline-block}
+        .back-btn:hover{text-decoration:underline}
+        .mode-btn{padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer}
+        .mode-active{background:#b45309;color:white}
+        .mode-inactive{background:#e5e7eb;color:#6b7280}
+    </style>
+</head>
+<body>
 
+<div class="toast" id="toast">✅ Готово</div>
+
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+            <img src="логотип щит юр.jpg" alt="Лого" class="h-8 w-auto">
+            <div><h1 class="text-lg font-bold text-gray-800">CRM Людмила Мельверт</h1><p class="text-xs text-gray-500">Управление</p></div>
+        </div>
+        <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 На сайт</a>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex flex-wrap gap-1 mb-6">
+        <button onclick="switchTab('clients')" id="tab_clients" class="tab-button tab-active">👥 КЛИЕНТЫ</button>
+        <button onclick="switchTab('leads')" id="tab_leads" class="tab-button tab-inactive">📋 ЗАЯВКИ</button>
+        <button onclick="switchTab('consult')" id="tab_consult" class="tab-button tab-inactive">🤖 КОНСУЛЬТАЦИЯ</button>
+        <button onclick="switchTab('docs')" id="tab_docs" class="tab-button tab-inactive">📄 ДОКУМЕНТЫ</button>
+        <button onclick="switchTab('settings')" id="tab_settings" class="tab-button tab-inactive">⚙️ НАСТРОЙКИ</button>
+    </div>
+
+    <div id="clientsTab" class="tab-content">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">👥 КЛИЕНТЫ</h2><button onclick="openClientModal()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm">➕ Добавить клиента</button></div>
+            <div id="clientsList" class="space-y-2 max-h-96 overflow-y-auto">Загрузка...</div>
+        </div>
+    </div>
+
+    <div id="clientCardTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <button onclick="backToClientsList()" class="back-btn">← Назад к списку клиентов</button>
+            <div id="clientCardContent"></div>
+            <div class="mt-6"><button onclick="openNewRequestModal()" class="bg-amber-600 text-white px-4 py-2 rounded-lg">➕ Новое обращение</button></div>
+        </div>
+    </div>
+
+    <div id="leadsTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">📋 ЗАЯВКИ С САЙТА</h2><button onclick="loadLeads()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm">🔄 Обновить</button></div>
+            <div id="leadsList" class="space-y-3 max-h-96 overflow-y-auto">Загрузка...</div>
+        </div>
+    </div>
+
+    <div id="consultTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <h2 class="text-xl font-bold mb-4">🤖 КОНСУЛЬТАЦИЯ С DEEPSEEK</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div><label class="font-semibold">Клиент</label><select id="consultClientId" class="w-full border rounded-lg p-2 mt-1"><option value="">-- Выберите клиента --</option></select></div>
+                <div><label class="font-semibold">Вопрос клиента</label><textarea id="question" rows="4" class="w-full border rounded-lg p-2 mt-1" placeholder="Опишите ситуацию..."></textarea><button onclick="askDeepSeek()" class="mt-2 bg-amber-600 text-white px-4 py-2 rounded-lg">🤖 Получить ответ</button></div>
+                <div class="md:col-span-2"><label class="font-semibold">Ответ DeepSeek</label><textarea id="answer" rows="6" class="w-full border rounded-lg p-2 mt-1" readonly placeholder="Здесь появится ответ..."></textarea><button onclick="saveConsultation()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg">💾 Сохранить ответ</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="docsTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <h2 class="text-xl font-bold mb-4">📄 ГЕНЕРАЦИЯ ДОКУМЕНТОВ</h2>
+            <div class="flex gap-2 mb-4">
+                <button onclick="setDocMode('ai')" id="mode_ai" class="mode-btn mode-active">🤖 DeepSeek AI</button>
+                <button onclick="setDocMode('template')" id="mode_template" class="mode-btn mode-inactive">📄 Готовый шаблон</button>
+            </div>
+            
+            <div id="aiMode" class="doc-mode">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div><label class="font-semibold">Клиент</label><select id="docClientId" class="w-full border rounded-lg p-2"><option value="">-- Выберите клиента --</option></select></div>
+                    <div><label class="font-semibold">Тип документа</label><select id="docTypeAi" class="w-full border rounded-lg p-2">
+                        <option value="sale">📄 Договор купли-продажи квартиры</option>
+                        <option value="house_sale">📄 Договор купли-продажи дома с ЗУ</option>
+                        <option value="pre_sale">📄 Предварительный договор купли-продажи квартиры</option>
+                        <option value="pre_house">📄 Предварительный договор купли-продажи дома с ЗУ</option>
+                        <option value="gift">🎁 Договор дарения</option>
+                        <option value="rent_owner">🏠 Договор аренды квартиры (через собственника)</option>
+                        <option value="rent_agent">🏠 Договор аренды квартиры (через Мельверт)</option>
+                        <option value="rent_deposit">🔐 Договор аренды квартиры с залогом</option>
+                        <option value="legal_services">⚖️ Договор оказания юридических услуг</option>
+                        <option value="realtor_services">🏡 Договор оказания риэлторских услуг</option>
+                        <option value="smm_services">📱 Договор на SMM-продвижение</option>
+                        <option value="commission">🤝 Агентский договор</option>
+                        <option value="receipt_dogovor">📝 Расписка к договору купли-продажи</option>
+                        <option value="receipt_advance">📝 Расписка в получении аванса/обеспечения</option>
+                        <option value="agreement_shares">📑 Соглашение о выделении долей</option>
+                        <option value="agreement_peace">⚖️ Мировое соглашение (досудебное)</option>
+                        <option value="agency_agreement">🤝 Соглашение о сотрудничестве с агентством</option>
+                        <option value="receipt_house">📝 Расписка в получении денег за дом и ЗУ</option>
+                    </select></div>
+                    <div class="md:col-span-2"><label class="font-semibold">Дополнительная информация</label><textarea id="docDetails" rows="4" class="w-full border rounded-lg p-2" placeholder="Опишите суть дела, сумму, адрес объекта, сроки..."></textarea><button onclick="generateAIDocument()" class="mt-2 bg-amber-600 text-white px-4 py-2 rounded-lg">🤖 Сформировать через DeepSeek</button></div>
+                </div>
+            </div>
+            
+            <div id="templateMode" class="doc-mode" style="display:none;">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div><label class="font-semibold">Клиент (Продавец/Заказчик)</label><select id="templateClientId" class="w-full border rounded-lg p-2"><option value="">-- Выберите клиента --</option></select></div>
+                    <div><label class="font-semibold">Тип документа</label><select id="docTypeTemplate" class="w-full border rounded-lg p-2">
+                        <option value="sale">📄 Договор купли-продажи квартиры</option>
+                        <option value="pre_sale">📄 Предварительный договор купли-продажи квартиры</option>
+                        <option value="house_sale">📄 Договор купли-продажи дома с ЗУ</option>
+                        <option value="pre_house">📄 Предварительный договор купли-продажи дома с ЗУ</option>
+                    </select></div>
+                    <div><label class="font-semibold">Дата</label><input type="date" id="templateDate" class="w-full border rounded-lg p-2"></div>
+                    <div><label class="font-semibold">Цена квартиры (₽)</label><input type="text" id="templatePrice" class="w-full border rounded-lg p-2"></div>
+                    <div><label class="font-semibold">Цена дома (₽)</label><input type="text" id="templateHousePrice" class="w-full border rounded-lg p-2" placeholder="для ДКП дома с ЗУ"></div>
+                    <div><label class="font-semibold">Цена участка (₽)</label><input type="text" id="templateLandPrice" class="w-full border rounded-lg p-2" placeholder="для ДКП дома с ЗУ"></div>
+                    <div class="md:col-span-2"><label class="font-semibold">Адрес объекта</label><input type="text" id="templateAddress" class="w-full border rounded-lg p-2"></div>
+                    <div><label class="font-semibold">Кадастровый номер</label><input type="text" id="templateCadastre" class="w-full border rounded-lg p-2"></div>
+                    <div><label class="font-semibold">Площадь (м²)</label><input type="text" id="templateArea" class="w-full border rounded-lg p-2"></div>
+                    <div><label class="font-semibold">Этаж / этажей</label><input type="text" id="templateFloor" class="w-full border rounded-lg p-2" placeholder="3/9"></div>
+                    <div><label class="font-semibold">Тип дома</label><input type="text" id="templateHouseType" class="w-full border rounded-lg p-2" placeholder="панельный, кирпичный"></div>
+                    <div><label class="font-semibold">Количество комнат</label><input type="text" id="templateRooms" class="w-full border rounded-lg p-2"></div>
+                    <div class="md:col-span-2"><label class="font-semibold">Дополнительные условия</label><textarea id="templateConditions" rows="3" class="w-full border rounded-lg p-2"></textarea><button onclick="generateTemplateDocument()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg">📄 Сформировать из шаблона</button></div>
+                </div>
+            </div>
+            
+            <div class="mt-4"><label class="font-semibold">Результат</label><div id="docResult" class="w-full border rounded-lg p-3 bg-white" style="min-height:400px; overflow:auto; font-family:'Times New Roman',serif; font-size:14px; line-height:1.5; white-space:pre-wrap">Здесь появится готовый документ...</div><div class="flex gap-2 mt-2"><button onclick="copyDocResult()" class="bg-gray-600 text-white px-4 py-2 rounded-lg">📋 Копировать</button><button onclick="saveDocumentToFile()" class="bg-green-600 text-white px-4 py-2 rounded-lg">💾 Скачать .docx</button></div></div>
+        </div>
+    </div>
+
+    <div id="settingsTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl shadow-sm p-4 space-y-4">
+            <h2 class="text-xl font-bold">⚙️ НАСТРОЙКИ</h2>
+            <div><label class="font-semibold">🔑 API Ключ DeepSeek</label><input type="password" id="deepseekKey" class="w-full border rounded-lg p-2 mt-1"><button onclick="saveDeepSeekKey()" class="mt-2 bg-amber-600 text-white px-4 py-2 rounded-lg">💾 Сохранить ключ</button><div id="keyStatus" class="text-sm mt-1"></div></div>
+            <div class="border-t pt-4"><h3 class="font-semibold">📌 Ваши данные для документов (Мельверт Л.В.)</h3><div class="grid md:grid-cols-2 gap-2 text-sm mt-2"><div><strong>ФИО:</strong> Мельверт Людмила Витальевна</div><div><strong>Паспорт:</strong> 0414 689546</div><div><strong>Телефон:</strong> +7 (960) 763-51-70</div><div><strong>Email:</strong> marigoda68@mail.ru</div><div><strong>Адрес:</strong> Красноярский край, г.Шарыпово, микр.3, д.24, кв.107</div></div></div>
+        </div>
+    </div>
+</main>
+
+<div id="clientModal" class="modal"><div class="bg-white rounded-xl w-full max-w-md m-4 p-6"><div class="flex justify-between"><h3 class="text-xl font-bold mb-4">➕ Новый клиент</h3><button onclick="closeClientModal()" class="text-gray-500 text-2xl">&times;</button></div><div class="space-y-3"><input type="text" id="clientName" placeholder="ФИО" class="w-full border rounded-lg p-2"><input type="text" id="clientPhone" placeholder="Телефон" class="w-full border rounded-lg p-2"><input type="text" id="clientAddress" placeholder="Адрес" class="w-full border rounded-lg p-2"><input type="text" id="clientPassport" placeholder="Паспортные данные" class="w-full border rounded-lg p-2"><input type="text" id="clientSnils" placeholder="СНИЛС" class="w-full border rounded-lg p-2"><textarea id="clientNotes" placeholder="Заметки" rows="2" class="w-full border rounded-lg p-2"></textarea></div><div class="flex justify-end gap-2 mt-4"><button onclick="closeClientModal()" class="px-4 py-2 border rounded-lg">Отмена</button><button onclick="saveClient()" class="px-4 py-2 bg-amber-600 text-white rounded-lg">Сохранить</button></div></div></div>
+
+<div id="requestModal" class="modal"><div class="bg-white rounded-xl w-full max-w-md m-4 p-6"><div class="flex justify-between"><h3 class="text-xl font-bold mb-4">➕ Новое обращение</h3><button onclick="closeRequestModal()" class="text-gray-500 text-2xl">&times;</button></div><div class="space-y-3"><textarea id="requestText" rows="4" placeholder="Опишите обращение клиента..." class="w-full border rounded-lg p-2"></textarea></div><div class="flex justify-end gap-2 mt-4"><button onclick="closeRequestModal()" class="px-4 py-2 border rounded-lg">Отмена</button><button onclick="saveNewRequest()" class="px-4 py-2 bg-amber-600 text-white rounded-lg">Сохранить</button></div></div></div>
+
+<script>
+const API_URL='https://script.google.com/macros/s/AKfycby6BGWA-Np7b-1s4SzthfXYYMAsL590YsWe7V2bvghuMckCeAIzgBHPYHJXOTPFhlHW/exec';
+let clients=[],currentClientId=null,currentDocMode='ai';
+
+function showToast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function setDocMode(m){currentDocMode=m;document.getElementById('aiMode').style.display=m==='ai'?'block':'none';document.getElementById('templateMode').style.display=m==='template'?'block':'none';document.getElementById('mode_ai').className=m==='ai'?'mode-btn mode-active':'mode-btn mode-inactive';document.getElementById('mode_template').className=m==='template'?'mode-btn mode-active':'mode-btn mode-inactive';}
+
+async function loadClients(){try{const r=await fetch(`${API_URL}?action=getClients`);const d=await r.json();if(d.status==='success'){clients=d.clients||[];renderClients();updateClientSelects();}}catch(e){}}
+function renderClients(){const c=document.getElementById('clientsList');if(!clients.length){c.innerHTML='<div class="text-center py-10 text-gray-500">👥 Нет клиентов</div>';return;}c.innerHTML=clients.map(c=>`<div class="client-card bg-gray-50 p-3 rounded-lg" onclick="openClientCard(${c.id})"><div class="flex justify-between"><span class="font-bold">${c.name}</span></div><div>📞 ${c.phone||'—'}</div></div>`).join('');}
+function updateClientSelects(){['consultClientId','docClientId','templateClientId'].forEach(id=>{const s=document.getElementById(id);if(s){s.innerHTML='<option value="">-- Выберите клиента --</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');}});}
+async function openClientCard(id){currentClientId=id;const client=clients.find(c=>c.id==id);document.getElementById('clientsTab').style.display='none';document.getElementById('clientCardTab').style.display='block';document.getElementById('clientCardContent').innerHTML=`<div class="border-b pb-4 mb-4"><h2 class="text-2xl font-bold">${client.name}</h2><p>📞 ${client.phone||'—'}</p><p>📍 ${client.address||'—'}</p><p>🆔 ${client.passport||'—'}</p><p>🆔 СНИЛС: ${client.snils||'—'}</p></div><h3 class="font-bold text-lg mb-3">📋 История обращений</h3><div class="text-gray-400">Нет обращений</div>`;}
+function backToClientsList(){document.getElementById('clientCardTab').style.display='none';document.getElementById('clientsTab').style.display='block';}
+function openClientModal(){document.getElementById('clientModal').classList.add('active');}
+function closeClientModal(){document.getElementById('clientModal').classList.remove('active');}
+async function saveClient(){const name=document.getElementById('clientName').value;if(!name){showToast('Введите ФИО');return;}await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addClient',name,phone:document.getElementById('clientPhone').value,address:document.getElementById('clientAddress').value,passport:document.getElementById('clientPassport').value,snils:document.getElementById('clientSnils').value,notes:document.getElementById('clientNotes').value})});showToast('Клиент добавлен');closeClientModal();loadClients();setTimeout(()=>{document.getElementById('clientName').value='';document.getElementById('clientPhone').value='';document.getElementById('clientAddress').value='';document.getElementById('clientPassport').value='';document.getElementById('clientSnils').value='';document.getElementById('clientNotes').value='';},100);}
+function openNewRequestModal(){document.getElementById('requestModal').classList.add('active');}
+function closeRequestModal(){document.getElementById('requestModal').classList.remove('active');}
+async function saveNewRequest(){const text=document.getElementById('requestText').value;if(!text){showToast('Введите текст');return;}await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addRequest',clientId:currentClientId,text})});showToast('Обращение сохранено');closeRequestModal();openClientCard(currentClientId);}
+async function loadLeads(){try{const r=await fetch(`${API_URL}?action=getLeads`);const d=await r.json();if(d.status==='success'){const c=document.getElementById('leadsList');if(!d.leads.length)c.innerHTML='<div class="text-center py-10 text-gray-500">📋 Нет заявок</div>';else c.innerHTML=d.leads.map(l=>`<div class="bg-gray-50 p-3 rounded-lg"><div><span class="font-bold">${l.name}</span> <span class="text-sm text-gray-500">${l.date||''}</span></div><div>📞 ${l.phone||''}</div></div>`).join('');}}catch(e){showToast('Ошибка загрузки');}}
+function saveDeepSeekKey(){const key=document.getElementById('deepseekKey').value;localStorage.setItem('deepseek_key',key);document.getElementById('keyStatus').innerHTML='<span class="text-green-600">✅ Ключ сохранён</span>';showToast('Ключ сохранён');}
+function getDeepSeekKey(){const key=localStorage.getItem('deepseek_key');if(!key){showToast('⚠️ Введите API ключ DeepSeek в настройках');return null;}return key;}
+async function askDeepSeek(){const key=getDeepSeekKey();if(!key)return;const q=document.getElementById('question').value;if(!q){showToast('Введите вопрос');return;}document.getElementById('answer').value='🤔 Думаю...';try{const r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:`Ты юрист. Ответь: ${q}`}],temperature:0.7})});const d=await r.json();if(d.choices)document.getElementById('answer').value=d.choices[0].message.content;else throw new Error();}catch(e){document.getElementById('answer').value='❌ Ошибка. Проверьте ключ и баланс.';}}
+async function saveConsultation(){const cid=document.getElementById('consultClientId').value;const q=document.getElementById('question').value;const a=document.getElementById('answer').value;if(!cid||!q||!a){showToast('Выберите клиента, введите вопрос и ответ');return;}await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addConsultation',clientId:cid,question:q,answer:a})});showToast('Консультация сохранена');}
+function getAgentData(){return{name:'Мельверт Людмила Витальевна',passport:'0414 689546',phone:'+7 (960) 763-51-70',email:'marigoda68@mail.ru',address:'Красноярский край, г.Шарыпово, микр.3, д.24, кв.107'};}
+function numberToWords(num){const units=['','одна','две','три','четыре','пять','шесть','семь','восемь','девять'];const tens=['','десять','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто'];const hundreds=['','сто','двести','триста','четыреста','пятьсот','шестьсот','семьсот','восемьсот','девятьсот'];if(num===0)return 'ноль';let str='';const millions=Math.floor(num/1000000);if(millions>0){str+=hundreds[Math.floor(millions/100)]+' ';const mTens=Math.floor((millions%100)/10);const mUnits=millions%10;if(mTens===1)str+='десять ';else{str+=tens[mTens]+' ';str+=units[mUnits]+' ';}str+=millions===1?'миллион ':(millions>=2&&millions<=4)?'миллиона ':'миллионов ';}const thousands=Math.floor((num%1000000)/1000);if(thousands>0){str+=hundreds[Math.floor(thousands/100)]+' ';const tTens=Math.floor((thousands%100)/10);const tUnits=thousands%10;if(tTens===1)str+='десять ';else{str+=tens[tTens]+' ';str+=(tUnits===1||tUnits===2?units[tUnits]:units[tUnits])+' ';}str+=thousands===1?'тысяча ':(thousands>=2&&thousands<=4)?'тысячи ':'тысяч ';}const rest=num%1000;if(rest>0){str+=hundreds[Math.floor(rest/100)]+' ';const rTens=Math.floor((rest%100)/10);const rUnits=rest%10;if(rTens===1){if(rUnits===0)str+='десять ';else if(rUnits===1)str+='одиннадцать ';else if(rUnits===2)str+='двенадцать ';else if(rUnits===3)str+='тринадцать ';else if(rUnits===4)str+='четырнадцать ';else if(rUnits===5)str+='пятнадцать ';else if(rUnits===6)str+='шестнадцать ';else if(rUnits===7)str+='семнадцать ';else if(rUnits===8)str+='восемнадцать ';else if(rUnits===9)str+='девятнадцать ';}else{str+=tens[rTens]+' ';str+=units[rUnits]+' ';}}return str.trim();}
+function formatDateToWords(dateStr){if(!dateStr)return'';const d=new Date(dateStr);const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} года`;}
+function getLogoHtml(){return '<div style="text-align:center; margin-bottom:20px;"><img src="логотип ан для договоров, соглашений,расписок.jpg" style="max-width:150px; height:auto;"></div>';}
+async function generateTemplateDocument(){const cid=document.getElementById('templateClientId').value;const dt=document.getElementById('docTypeTemplate').value;const date=document.getElementById('templateDate').value;const priceApartment=document.getElementById('templatePrice').value;const priceHouse=document.getElementById('templateHousePrice').value;const priceLand=document.getElementById('templateLandPrice').value;const address=document.getElementById('templateAddress').value;const cadastre=document.getElementById('templateCadastre').value;const area=document.getElementById('templateArea').value;const floor=document.getElementById('templateFloor').value;const houseType=document.getElementById('templateHouseType').value;const rooms=document.getElementById('templateRooms').value;const conditions=document.getElementById('templateConditions').value;if(!cid){showToast('Выберите клиента');return;}const client=clients.find(c=>c.id==cid);const agent=getAgentData();let templateContent='';let fileName='';if(dt==='sale'){fileName='ДКП_квартиры.txt';}else if(dt==='pre_sale'){fileName='Предварительный_ДКП_квартиры.txt';}else if(dt==='house_sale'){fileName='ДКП_дома_с_ЗУ.txt';}else if(dt==='pre_house'){fileName='Предварительный_ДКП_дома_с_ЗУ.txt';}try{const response=await fetch(fileName);if(!response.ok)throw new Error('Файл не найден');templateContent=await response.text();}catch(e){showToast('Ошибка загрузки шаблона');document.getElementById('docResult').innerHTML='❌ Шаблон не найден. Убедитесь, что файл '+fileName+' загружен в корень репозитория.';return;}const priceNumApartment=parseInt(priceApartment)||0;const priceNumHouse=parseInt(priceHouse)||0;const priceNumLand=parseInt(priceLand)||0;const totalPrice=priceNumHouse+priceNumLand;const dateFormatted=date?formatDateToWords(date):'____________ года';let result=templateContent;result=result.replace(/\[Дата_прописью\]/g,dateFormatted);result=result.replace(/\[Список_продавцов\]/g,`${client.name}, паспорт ${client.passport||'____________'}, зарегистрирован(а): ${client.address||'____________'}, СНИЛС ${client.snils||'____________'}`);result=result.replace(/\[Список_покупателей\]/g,`${agent.name}, паспорт ${agent.passport}, зарегистрирована: ${agent.address}`);result=result.replace(/\[Адрес_квартиры\]/g,address);result=result.replace(/\[Адрес_объекта\]/g,address);result=result.replace(/\[Кадастровый_номер\]/g,cadastre);result=result.replace(/\[Площадь\]/g,area);result=result.replace(/\[Этаж\]/g,floor);result=result.replace(/\[Тип_дома\]/g,houseType);result=result.replace(/\[Комнатность\]/g,`${rooms}-комнатную`);result=result.replace(/\[Цена_квартиры_цифрами\]/g,priceNumApartment.toLocaleString());result=result.replace(/\[Цена_квартиры_прописью\]/g,numberToWords(priceNumApartment));result=result.replace(/\[Цена_дома_цифрами\]/g,priceNumHouse.toLocaleString());result=result.replace(/\[Цена_дома_прописью\]/g,numberToWords(priceNumHouse));result=result.replace(/\[Цена_участка_цифрами\]/g,priceNumLand.toLocaleString());result=result.replace(/\[Цена_участка_прописью\]/g,numberToWords(priceNumLand));result=result.replace(/\[Общая_цена_цифрами\]/g,totalPrice.toLocaleString());result=result.replace(/\[Общая_цена_прописью\]/g,numberToWords(totalPrice));let formattedResult=getLogoHtml();formattedResult+=`<div style="text-align:center; font-weight:bold; font-size:16px; margin-bottom:10px">ДОГОВОР КУПЛИ-ПРОДАЖИ</div>`;formattedResult+=`<div style="text-align:center; font-size:12px; margin-bottom:5px">Российская Федерация, Красноярский край, город Шарыпово</div>`;formattedResult+=`<div style="text-align:center; margin-bottom:20px">${dateFormatted}</div>`;formattedResult+=`<div>${result}</div>`;document.getElementById('docResult').innerHTML=formattedResult;showToast('Документ сформирован');}
+async function generateAIDocument(){const key=getDeepSeekKey();if(!key)return;const cid=document.getElementById('docClientId').value;const dt=document.getElementById('docTypeAi').value;const details=document.getElementById('docDetails').value;if(!cid){showToast('Выберите клиента');return;}const client=clients.find(c=>c.id==cid);const agent=getAgentData();document.getElementById('docResult').innerHTML='⏳ Формирую документ...';const prompt=`Составь договор купли-продажи квартиры в официально-деловом стиле. Вверху по центру логотип: <img src="логотип ан для договоров, соглашений,расписок.jpg" style="max-width:150px;">. Затем название договора жирным по центру. Затем "Российская Федерация, Красноярский край, город Шарыпово" по центру. Затем дату прописью по центру. Продавец: ${client.name}, паспорт ${client.passport||'не указан'}, адрес ${client.address||'не указан'}, СНИЛС ${client.snils||'не указан'}. Покупатель: ${agent.name}, паспорт ${agent.passport}. Адрес объекта: ${details}. Цену укажи цифрами и прописью в скобках.`;try{const r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:prompt}],temperature:0.5})});const d=await r.json();if(d.choices)document.getElementById('docResult').innerHTML=d.choices[0].message.content;else throw new Error();}catch(e){document.getElementById('docResult').innerHTML='❌ Ошибка генерации. Проверьте ключ и баланс.';}}
+function copyDocResult(){const t=document.getElementById('docResult').innerText;if(t){navigator.clipboard.writeText(t);showToast('Скопировано');}}
+function saveDocumentToFile(){const t=document.getElementById('docResult').innerText;if(!t){showToast('Нет документа');return;}const b=new Blob([t],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`document_${Date.now()}.doc`;a.click();URL.revokeObjectURL(a.href);showToast('Скачано');}
+function switchTab(tab){document.querySelectorAll('.tab-content').forEach(el=>el.style.display='none');document.getElementById(tab+'Tab').style.display='block';document.querySelectorAll('.tab-button').forEach(btn=>{btn.classList.remove('tab-active');btn.classList.add('tab-inactive');});document.getElementById('tab_'+tab).classList.add('tab-active');if(tab==='clients')loadClients();if(tab==='leads')loadLeads();if(tab==='settings'){const k=localStorage.getItem('deepseek_key');if(k)document.getElementById('deepseekKey').value=k;}}
+window.switchTab=switchTab;window.openClientModal=openClientModal;window.closeClientModal=closeClientModal;window.saveClient=saveClient;window.loadLeads=loadLeads;window.askDeepSeek=askDeepSeek;window.saveConsultation=saveConsultation;window.generateAIDocument=generateAIDocument;window.generateTemplateDocument=generateTemplateDocument;window.copyDocResult=copyDocResult;window.saveDocumentToFile=saveDocumentToFile;window.saveDeepSeekKey=saveDeepSeekKey;window.openClientCard=openClientCard;window.backToClientsList=backToClientsList;window.openNewRequestModal=openNewRequestModal;window.closeRequestModal=closeRequestModal;window.saveNewRequest=saveNewRequest;window.setDocMode=setDocMode;
+setDocMode('ai');loadClients();
+</script>
+</body>
+</html>
